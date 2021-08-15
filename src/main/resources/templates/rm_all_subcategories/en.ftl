@@ -1,0 +1,1 @@
+:x: All of ${name}

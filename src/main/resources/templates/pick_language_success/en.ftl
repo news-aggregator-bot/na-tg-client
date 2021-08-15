@@ -1,0 +1,1 @@
+You've just subscribed for news on ${name} language.

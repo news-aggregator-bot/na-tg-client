@@ -1,0 +1,1 @@
+You've just subscribed on ${name} source.
