@@ -14,7 +14,7 @@
     <version>0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>na-tg-client-bot</name>
+    <name>na-tg-client</name>
 
     <distributionManagement>
         <repository>
@@ -108,7 +108,7 @@
     </dependencies>
 
     <build>
-        <finalName>na-client-bot</finalName>
+        <finalName>na-tg-client</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
