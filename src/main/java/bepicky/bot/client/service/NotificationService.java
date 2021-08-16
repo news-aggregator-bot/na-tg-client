@@ -3,7 +3,7 @@ package bepicky.bot.client.service;
 import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.core.BotRouter;
 import bepicky.bot.core.message.LangUtils;
-import bepicky.bot.core.message.builder.TgMessageBuilder;
+import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.common.domain.dto.NewsNoteNotificationDto;
 import bepicky.common.domain.request.NotifyMessageRequest;
@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
@@ -40,7 +41,12 @@ public class NotificationService implements INotificationService {
 
             String noteMsg = buildMessage(n, request.getLang());
             try {
-                bot.execute(TgMessageBuilder.noNotificationMsg(request.getChatId(), noteMsg));
+                SendMessage msg = new SendMessageBuilder(request.getChatId(), noteMsg)
+                    .disableNotification()
+                    .enableHtml()
+                    .enableMarkdown()
+                    .build();
+                bot.execute(msg);
             } catch (TelegramApiException e) {
                 if (e instanceof TelegramApiRequestException) {
                     TelegramApiRequestException requestException = (TelegramApiRequestException) e;
@@ -59,7 +65,7 @@ public class NotificationService implements INotificationService {
     public void messageNotification(NotifyMessageRequest request) {
         request.getReaders().parallelStream().forEach(reader -> {
             try {
-                bot.execute(TgMessageBuilder.msg(reader, request.getMessage()));
+                bot.execute(new SendMessageBuilder(reader, request.getMessage()).build());
             } catch (TelegramApiException e) {
                 if (e instanceof TelegramApiRequestException) {
                     TelegramApiRequestException requestException = (TelegramApiRequestException) e;

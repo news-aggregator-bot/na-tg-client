@@ -5,7 +5,7 @@ import bepicky.bot.core.cmd.ChatCommand;
 import bepicky.bot.core.cmd.CommandManager;
 import bepicky.bot.client.message.handler.context.ChatChainLink;
 import bepicky.bot.client.message.handler.context.ChatChainManager;
-import bepicky.bot.core.message.builder.TgMessageBuilder;
+import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.handler.MessageHandler;
 import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.bot.client.service.IReaderService;
@@ -58,7 +58,9 @@ public class WelcomeMessageHandler implements MessageHandler {
         );
         inlineMarkup.addButtons(Arrays.asList(next));
 
-        return TgMessageBuilder.msg(cc.getChatId(), text, inlineMarkup.build());
+        return new SendMessageBuilder(cc.getChatId(), text)
+            .replyMarkup(inlineMarkup.build())
+            .build();
     }
 
     @Override

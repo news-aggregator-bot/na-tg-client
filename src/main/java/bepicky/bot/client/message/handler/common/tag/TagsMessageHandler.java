@@ -4,7 +4,7 @@ import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.ITagService;
 import bepicky.bot.core.cmd.ChatCommand;
 import bepicky.bot.core.message.LangUtils;
-import bepicky.bot.core.message.builder.TgMessageBuilder;
+import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.handler.MessageHandler;
 import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.common.domain.dto.TagDto;
@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class TagsMessageHandler implements MessageHandler {
         TagListResponse r = tagService.getAllBy(cc.getChatId());
         if (r.isError()) {
             String errorText = templateContext.errorTemplate(LangUtils.DEFAULT);
-            return TgMessageBuilder.noWebPreviewMsg(cc.getChatId(), errorText);
+            return new SendMessageBuilder(cc.getChatId(), errorText).build();
         }
 
         String text = templateContext.processTemplate(
@@ -46,7 +45,7 @@ public class TagsMessageHandler implements MessageHandler {
                 .build()
         );
 
-        return TgMessageBuilder.noWebPreviewMsg(cc.getChatId(), text);
+        return new SendMessageBuilder(cc.getChatId(), text).build();
     }
 
     @Override

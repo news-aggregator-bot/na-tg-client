@@ -3,7 +3,7 @@ package bepicky.bot.client.message.handler.common;
 import bepicky.bot.client.message.button.ReplyMarkupBuilder;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.core.cmd.ChatCommand;
-import bepicky.bot.core.message.builder.TgMessageBuilder;
+import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.handler.MessageHandler;
 import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateNames;
@@ -39,7 +39,9 @@ public class HelpMessageHandler implements MessageHandler {
         replyMarkup.addButtons(Arrays.asList(tags, settings));
         replyMarkup.addButtons(Arrays.asList(helpText));
 
-        return TgMessageBuilder.msg(cc.getChatId(), text, replyMarkup.build());
+        return new SendMessageBuilder(cc.getChatId(), text)
+            .replyMarkup(replyMarkup.build())
+            .build();
     }
 
     @Override

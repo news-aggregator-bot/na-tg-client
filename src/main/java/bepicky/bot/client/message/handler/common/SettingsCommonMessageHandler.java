@@ -5,13 +5,12 @@ import bepicky.bot.client.message.handler.util.StatusMessageHandler;
 import bepicky.bot.core.cmd.CallbackCommand;
 import bepicky.bot.core.cmd.ChatCommand;
 import bepicky.bot.core.cmd.CommandType;
-import bepicky.bot.core.message.builder.TgMessageBuilder;
+import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.handler.CallbackMessageHandler;
 import bepicky.bot.core.message.handler.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Component
@@ -32,7 +31,10 @@ public class SettingsCommonMessageHandler implements MessageHandler {
         CallbackMessageHandler.HandleResult status = statusMessageHandler.handle(callbackCmd);
         CallbackMessageHandler.HandleResult settings = settingsMessageHandler.handle(callbackCmd);
 
-        return TgMessageBuilder.msg(cc.getChatId(), status.getText() + settings.getText(), settings.getInline());
+        return new SendMessageBuilder(cc.getChatId(), status.getText() + settings.getText())
+            .replyMarkup(settings.getInline())
+            .enableHtml()
+            .build();
     }
 
     @Override
