@@ -23,8 +23,6 @@ jobs:
             - na-tg-{{ checksum "pom.xml" }}
 
       - run: mvn -s .circleci/settings.xml dependency:go-offline # gets the project dependencies
-      - run: cd /home/circleci/.ssh/ && ls -al
-
 
       - save_cache: # saves the project dependencies
           paths:
