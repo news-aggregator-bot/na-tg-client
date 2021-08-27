@@ -1,5 +1,6 @@
 package bepicky.bot.client.service;
 
+import bepicky.bot.client.message.nats.NewsNoteNotificationSuccessMessagePublisher;
 import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.core.BotRouter;
 import bepicky.bot.core.message.LangUtils;
@@ -7,7 +8,7 @@ import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.common.domain.dto.NewsNoteNotificationDto;
 import bepicky.common.domain.request.NotifyMessageRequest;
-import bepicky.common.domain.request.NotifyNewsRequest;
+import bepicky.common.domain.request.NewsNotificationRequest;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -35,30 +36,33 @@ public class NotificationService implements INotificationService {
     @Autowired
     private IValueNormalisationService normalisationService;
 
-    @Override
-    public void newsNoteNotification(NotifyNewsRequest request) {
-        for (NewsNoteNotificationDto n : request.getNotifications()) {
+    @Autowired
+    private NewsNoteNotificationSuccessMessagePublisher successMessagePublisher;
 
-            String noteMsg = buildMessage(n, request.getLang());
-            try {
-                SendMessage msg = new SendMessageBuilder(request.getChatId(), noteMsg)
-                    .disableNotification()
-                    .enableHtml()
-                    .enableMarkdown()
-                    .build();
-                bot.execute(msg);
-            } catch (TelegramApiException e) {
-                if (e instanceof TelegramApiRequestException) {
-                    TelegramApiRequestException requestException = (TelegramApiRequestException) e;
-                    if (requestException.getErrorCode() == 403) {
-                        log.info("reader:disabled:{}", request.getChatId());
-                        readerService.disable(request.getChatId());
-                    }
+    @Override
+    public void newsNoteNotification(NewsNotificationRequest r) {
+
+        String noteMsg = buildMessage(r.getNotification(), r.getLang());
+        try {
+            SendMessage msg = new SendMessageBuilder(r.getChatId(), noteMsg)
+                .disableNotification()
+                .enableHtml()
+                .build();
+            bot.execute(msg);
+        } catch (TelegramApiException e) {
+            if (e instanceof TelegramApiRequestException) {
+                TelegramApiRequestException requestException = (TelegramApiRequestException) e;
+                if (requestException.getErrorCode() == 403) {
+                    log.info("reader:disabled:{}", r.getChatId());
+                    readerService.disable(r.getChatId());
                 } else {
-                    log.warn("reader:notify:failed:{}", e.getMessage());
+                    log.warn("newsnote:notification:failed " + e.getMessage());
                 }
+            } else {
+                log.warn("newsnote:notification:failed:{}", e.getMessage());
             }
         }
+        successMessagePublisher.publish(r.getChatId(), r.getNotification().getNoteId());
     }
 
     @Override

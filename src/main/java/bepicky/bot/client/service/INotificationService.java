@@ -1,11 +1,11 @@
 package bepicky.bot.client.service;
 
 import bepicky.common.domain.request.NotifyMessageRequest;
-import bepicky.common.domain.request.NotifyNewsRequest;
+import bepicky.common.domain.request.NewsNotificationRequest;
 
 public interface INotificationService {
 
-    void newsNoteNotification(NotifyNewsRequest request);
+    void newsNoteNotification(NewsNotificationRequest request);
 
     void messageNotification(NotifyMessageRequest request);
 

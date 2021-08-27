@@ -1,18 +1,14 @@
 package bepicky.bot.client.service;
 
 import bepicky.bot.client.config.TemplateConfig;
-import bepicky.bot.client.controller.NotificationController;
-import bepicky.bot.client.service.IReaderService;
-import bepicky.bot.client.service.IValueNormalisationService;
-import bepicky.bot.client.service.ValueNormalisationService;
+import bepicky.bot.client.message.nats.NewsNoteNotificationSuccessMessagePublisher;
 import bepicky.bot.core.BotRouter;
 import bepicky.bot.core.message.LangUtils;
 import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.common.domain.dto.CategoryDto;
-import bepicky.common.domain.dto.NewsNoteDto;
 import bepicky.common.domain.dto.NewsNoteNotificationDto;
 import bepicky.common.domain.dto.SourcePageDto;
-import bepicky.common.domain.request.NotifyNewsRequest;
+import bepicky.common.domain.request.NewsNotificationRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -28,10 +24,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
@@ -53,6 +50,9 @@ public class NotificationServiceTest {
     @MockBean
     private IReaderService readerService;
 
+    @MockBean
+    private NewsNoteNotificationSuccessMessagePublisher successMessagePublisher;
+
     @Autowired
     private IValueNormalisationService normalisationService;
 
@@ -71,7 +71,9 @@ public class NotificationServiceTest {
         pageRequest.setCategories(Arrays.asList(regionUSA, regionUSSR, politics, finance));
         noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
-        NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
+        NewsNotificationRequest request = notifyNewsReq(noteRequest);
+
+        doNothing().when(successMessagePublisher).publish(any(), any());
 
         notificationService.newsNoteNotification(request);
 
@@ -97,7 +99,9 @@ public class NotificationServiceTest {
         pageRequest.setCategories(Arrays.asList(politics, finance));
         noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
-        NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
+        NewsNotificationRequest request = notifyNewsReq(noteRequest);
+
+        doNothing().when(successMessagePublisher).publish(any(), any());
 
         notificationService.newsNoteNotification(request);
 
@@ -123,7 +127,9 @@ public class NotificationServiceTest {
         pageRequest.setCategories(Arrays.asList(politics, finance));
         noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
-        NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
+        NewsNotificationRequest request = notifyNewsReq(noteRequest);
+
+        doNothing().when(successMessagePublisher).publish(any(), any());
 
         notificationService.newsNoteNotification(request);
 
@@ -145,7 +151,9 @@ public class NotificationServiceTest {
         pageRequest.setCategories(Arrays.asList(common("Finance")));
         noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
-        NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
+        NewsNotificationRequest request = notifyNewsReq(noteRequest);
+
+        doNothing().when(successMessagePublisher).publish(any(), any());
 
         notificationService.newsNoteNotification(request);
 
@@ -166,7 +174,9 @@ public class NotificationServiceTest {
         SourcePageDto pageRequest = sourcePageDto();
         noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
-        NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
+        NewsNotificationRequest request = notifyNewsReq(noteRequest);
+
+        doNothing().when(successMessagePublisher).publish(any(), any());
 
         notificationService.newsNoteNotification(request);
 
@@ -187,7 +197,9 @@ public class NotificationServiceTest {
         pageRequest.setCategories(Collections.emptyList());
         noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
-        NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
+        NewsNotificationRequest request = notifyNewsReq(noteRequest);
+
+        doNothing().when(successMessagePublisher).publish(any(), any());
 
         notificationService.newsNoteNotification(request);
     }
@@ -200,16 +212,18 @@ public class NotificationServiceTest {
         pageRequest.setCategories(Collections.emptyList());
         noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
-        NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
+        NewsNotificationRequest request = notifyNewsReq(noteRequest);
+
+        doNothing().when(successMessagePublisher).publish(any(), any());
 
         notificationService.newsNoteNotification(request);
     }
 
-    private NotifyNewsRequest notifyNewsReq(List<NewsNoteNotificationDto> notifications) {
-        NotifyNewsRequest request = new NotifyNewsRequest();
+    private NewsNotificationRequest notifyNewsReq(NewsNoteNotificationDto notification) {
+        NewsNotificationRequest request = new NewsNotificationRequest();
         request.setChatId(CHAT_ID);
         request.setLang(LangUtils.DEFAULT);
-        request.setNotifications(notifications);
+        request.setNotification(notification);
         return request;
     }
 

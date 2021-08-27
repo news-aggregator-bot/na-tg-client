@@ -7,13 +7,43 @@ camel:
     main-run-controller: true
 bot:
   telegram:
-    name: bepicky
+    name: bepicky-tg-client
     token: ${TG_CLIENT_TOKEN}
 management:
   endpoints:
     web:
       exposure:
         include: '*'
+topics:
+  news:
+    notification:
+      new: newsnote.notification
+      success: newsnote.notification.success
 eureka:
   instance:
     hostName: na-tg-client
+  client:
+    serviceUrl:
+      defaultZone: http://na-registry:8761/eureka/
+logging:
+  level:
+    org.springframework.security: INFO
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+spring:
+  application:
+    name: bepicky-client-bot
+  cloud:
+    inetutils:
+      ignoredInterfaces:
+        - docker0
+        - veth.*
+  config:
+    import: "optional:configserver:"
+    activate:
+      on-profile: ${SPRING_PROFILES_ACTIVE}
