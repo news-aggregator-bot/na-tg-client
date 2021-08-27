@@ -35,9 +35,10 @@ public class NewsNotificationListener {
         Dispatcher dispatcher = natsConnection.createDispatcher(msg -> {
             try {
                 NewsNotificationRequest r = om.readValue(msg.getData(), NewsNotificationRequest.class);
+                log.info("newsnote:notification:{}:{}", r.getChatId(), r.getNotification().toString());
                 handle(r);
             } catch (IOException e) {
-                log.error("newnote:notificaton:failed " + e.getMessage());
+                log.error("newsnote:notificaton:failed " + e.getMessage());
             }
         });
         dispatcher.subscribe(newsNotificationNew);
