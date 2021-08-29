@@ -1,6 +1,6 @@
 package bepicky.bot.client.message.nats;
 
-import bepicky.common.domain.request.NewsNotificationSuccessMessage;
+import bepicky.common.msg.NewsNotificationSuccessMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nats.client.Connection;
