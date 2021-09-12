@@ -15,10 +15,27 @@ management:
       exposure:
         include: '*'
 topics:
+  category:
+    cmd:
+      start: category.cmd.start
+      finish: category.cmd.finish
+    list:
+      start: category.list.start
+      finish: category.list.finish
+  reader:
+    notification: reader.notification
   news:
     notification:
       new: newsnote.notification
       success: newsnote.notification.success
+  lang:
+    cmd:
+      start: lang.cmd.start
+      finish: lang.cmd.finish
+  src:
+    cmd:
+      start: src.cmd.start
+      finish: src.cmd.finish
 eureka:
   instance:
     hostName: na-tg-client

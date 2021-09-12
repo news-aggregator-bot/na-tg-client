@@ -9,6 +9,7 @@ import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.common.domain.dto.NewsNoteNotificationDto;
 import bepicky.common.domain.request.NotifyMessageRequest;
 import bepicky.common.domain.request.NewsNotificationRequest;
+import bepicky.common.msg.TextMessage;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -66,22 +67,22 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public void messageNotification(NotifyMessageRequest request) {
-        request.getReaders().parallelStream().forEach(reader -> {
-            try {
-                bot.execute(new SendMessageBuilder(reader, request.getMessage()).build());
-            } catch (TelegramApiException e) {
-                if (e instanceof TelegramApiRequestException) {
-                    TelegramApiRequestException requestException = (TelegramApiRequestException) e;
-                    if (requestException.getErrorCode() == 403) {
-                        log.info("reader:disabled:{}", reader);
-                        readerService.disable(reader);
-                    }
+    public void messageNotification(TextMessage t) {
+        try {
+            bot.execute(new SendMessageBuilder(t.getChatId(), t.getText()).build());
+        } catch (TelegramApiException e) {
+            if (e instanceof TelegramApiRequestException) {
+                TelegramApiRequestException requestException = (TelegramApiRequestException) e;
+                if (requestException.getErrorCode() == 403) {
+                    log.info("reader:disabled:{}", t.getChatId());
+                    readerService.disable(t.getChatId());
                 } else {
-                    log.warn("reader:notify:failed:{}", e.getMessage());
+                    log.warn("reader:notification:failed:{}", t.getChatId());
                 }
+            } else {
+                log.warn("reader:notification:failed:{}", e.getMessage());
             }
-        });
+        }
     }
 
     private String buildMessage(NewsNoteNotificationDto n, String lang) {

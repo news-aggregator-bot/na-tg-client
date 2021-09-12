@@ -42,7 +42,7 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         InlineMarkupBuilder markup = new InlineMarkupBuilder();
         String readerLang = response.getReader().getLang();
         List<InlineMarkupBuilder.InlineButton> subcategoryButtons = categories.stream()
-            .map(c -> new InlineMarkupBuilder.InlineButton(buildText(c, readerLang), buildCommand(c, parentId, page)))
+            .map(c -> new InlineMarkupBuilder.InlineButton(buildText(c, readerLang), buildCommand(c)))
             .collect(Collectors.toList());
 
         InlineMarkupBuilder.InlineButton allSubCategoriesBtn = buildAllSubCategoryButton(
@@ -136,13 +136,13 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
             : cmdMngr.sublist(entityType(), parent.getParent().getId());
     }
 
-    private List<String> buildCommand(CategoryDto c, long parent, int page) {
+    private String buildCommand(CategoryDto c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            String cmd = c.isPicked() ?
+            return c.isPicked() ?
                 cmdMngr.remove(entityType(), c.getId()) :
                 cmdMngr.pick(entityType(), c.getId());
-            return Arrays.asList(cmd, cmdMngr.sublist(entityType(), parent, page));
         }
-        return Arrays.asList(cmdMngr.sublist(entityType(), c.getId(), 1));
+
+        return cmdMngr.sublist(entityType(), c.getId(), 1);
     }
 }

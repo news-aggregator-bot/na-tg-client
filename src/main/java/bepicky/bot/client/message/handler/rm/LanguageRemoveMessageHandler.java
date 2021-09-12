@@ -9,11 +9,6 @@ import org.springframework.stereotype.Component;
 public class LanguageRemoveMessageHandler extends AbstractLanguageMessageHandler {
 
     @Override
-    protected LanguageResponse handle(Long chatId, String lang) {
-        return languageService.remove(chatId, lang);
-    }
-
-    @Override
     public CommandType commandType() {
         return CommandType.REMOVE;
     }
