@@ -44,7 +44,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
 
         InlineMarkupBuilder markup = new InlineMarkupBuilder();
         List<InlineMarkupBuilder.InlineButton> buttons = languages.stream()
-            .map(l -> buildButton(response.getReader(), l, page))
+            .map(l -> buildButton(response.getReader(), l))
             .collect(Collectors.toList());
 
         List<InlineMarkupBuilder.InlineButton> pagination = pagination(page, response, markup);
@@ -62,14 +62,13 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
         return new HandleResult(listSubcategoryText, markup.build());
     }
 
-    private InlineMarkupBuilder.InlineButton buildButton(ReaderDto r, LanguageDto l, int page) {
+    private InlineMarkupBuilder.InlineButton buildButton(ReaderDto r, LanguageDto l) {
         boolean langPicked = r.getLanguages().contains(l);
         String textKey = langPicked ? ButtonNames.REMOVE : ButtonNames.PICK;
         String command = langPicked ?
             cmdMngr.remove(entityType(), l.getLang()) :
             cmdMngr.pick(entityType(), l.getLang());
-        String list = cmdMngr.list(entityType(), page);
-        return new InlineMarkupBuilder.InlineButton(buildText(l, textKey), Arrays.asList(command, list));
+        return new InlineMarkupBuilder.InlineButton(buildText(l, textKey), command);
     }
 
     private String buildText(LanguageDto l, String textKey) {

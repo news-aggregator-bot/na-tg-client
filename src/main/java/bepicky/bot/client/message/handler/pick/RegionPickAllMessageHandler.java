@@ -10,11 +10,6 @@ import org.springframework.stereotype.Component;
 public class RegionPickAllMessageHandler extends AbstractCategoryMessageHandler {
 
     @Override
-    protected CategoryResponse handle(Long chatId, Long categoryId) {
-        return categoryService.pickAll(chatId, categoryId);
-    }
-
-    @Override
     public CommandType commandType() {
         return CommandType.PICK_ALL;
     }

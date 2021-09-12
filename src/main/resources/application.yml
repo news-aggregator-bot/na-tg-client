@@ -15,6 +15,13 @@ management:
       exposure:
         include: '*'
 topics:
+  category:
+    cmd:
+      start: category.cmd.start
+      finish: category.cmd.finish
+    list:
+      start: category.list.start
+      finish: category.list.finish
   reader:
     notification: reader.notification
   news:

@@ -1,14 +1,13 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.core.message.EntityType;
-import bepicky.bot.core.message.LangUtils;
 import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.core.cmd.CallbackCommand;
-import bepicky.bot.core.cmd.CommandType;
-import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.ISourceService;
+import bepicky.bot.core.cmd.CallbackCommand;
+import bepicky.bot.core.cmd.CommandType;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.message.LangUtils;
 import bepicky.bot.core.message.template.TemplateUtils;
 import bepicky.common.domain.dto.SourceDto;
 import bepicky.common.domain.response.SourceListResponse;
@@ -16,7 +15,6 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +37,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
 
         InlineMarkupBuilder markup = new InlineMarkupBuilder();
         List<InlineMarkupBuilder.InlineButton> buttons = sources.stream()
-            .map(s -> buildButton(s, page))
+            .map(this::buildButton)
             .collect(Collectors.toList());
 
         List<InlineMarkupBuilder.InlineButton> pagination = pagination(page, response, markup);
@@ -57,13 +55,12 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
         return new HandleResult(listSourcesText, markup.build());
     }
 
-    private InlineMarkupBuilder.InlineButton buildButton(SourceDto s, int page) {
+    private InlineMarkupBuilder.InlineButton buildButton(SourceDto s) {
         String textKey = s.isPicked() ? ButtonNames.REMOVE : ButtonNames.PICK;
         String command = s.isPicked() ?
             cmdMngr.remove(entityType(), s.getId()) :
             cmdMngr.pick(entityType(), s.getId());
-        String list = cmdMngr.list(entityType(), page);
-        return new InlineMarkupBuilder.InlineButton(buildText(s, textKey), Arrays.asList(command, list));
+        return new InlineMarkupBuilder.InlineButton(buildText(s, textKey), command);
     }
 
     private String buildText(SourceDto s, String textKey) {

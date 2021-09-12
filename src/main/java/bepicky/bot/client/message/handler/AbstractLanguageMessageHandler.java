@@ -15,9 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractLanguageMessageHandler implements EntityCallbackMessageHandler {
 
     @Autowired
-    protected CommandManager cmdMngr;
-
-    @Autowired
     protected MessageTemplateContext templateContext;
 
     @Autowired
