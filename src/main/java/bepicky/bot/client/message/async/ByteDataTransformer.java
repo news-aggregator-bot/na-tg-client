@@ -1,4 +1,4 @@
-package bepicky.bot.client.message.finisher;
+package bepicky.bot.client.message.async;
 
 import bepicky.common.data.DataTransformer;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,51 +1,56 @@
 package bepicky.bot.client.message.handler;
 
-import bepicky.bot.core.message.EntityType;
-import bepicky.bot.core.message.LangUtils;
 import bepicky.bot.core.cmd.CallbackCommand;
-import bepicky.bot.core.cmd.CommandManager;
-import bepicky.bot.core.message.handler.EntityCallbackMessageHandler;
-import bepicky.bot.core.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateNames;
-import bepicky.bot.client.service.ISourceService;
-import bepicky.bot.core.message.template.TemplateUtils;
+import bepicky.bot.core.message.EntityType;
+import bepicky.common.data.DataTransformer;
 import bepicky.common.domain.response.SourceResponse;
+import bepicky.common.msg.MsgCommand;
+import bepicky.common.msg.SourceCommandMsg;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import static bepicky.bot.core.message.EntityType.SOURCE;
 
-public abstract class AbstractSourceMessageHandler implements EntityCallbackMessageHandler {
+public abstract class AbstractSourceMessageHandler extends AbstractCmdMessageHandler {
 
     @Autowired
-    protected CommandManager cmdMngr;
+    private DataTransformer<byte[]> byteTransformer;
 
-    @Autowired
-    protected MessageTemplateContext templateContext;
+    @Value("${topics.src.cmd.start}")
+    private String startSubject;
 
-    @Autowired
-    protected ISourceService sourceService;
+    @Value("${topics.src.cmd.finish}")
+    private String finishSubject;
 
     @Override
-    public HandleResult handle(CallbackCommand cc) {
+    public void start(CallbackCommand cc) {
         long srcId = (long) cc.getId();
-        SourceResponse response = handle(cc.getChatId(), srcId);
-        if (response.isError()) {
-            String errorText = templateContext.errorTemplate(LangUtils.DEFAULT);
-            // handling
-            return new HandleResult(errorText, null);
-        }
-        String msg = templateContext.processTemplate(
-            TemplateNames.getTemplate(commandType(), entityType()),
-            response.getReader().getLang(),
-            TemplateUtils.name(response.getSource().getName())
+        SourceCommandMsg cmd = new SourceCommandMsg(
+            cc.getChatId(),
+            srcId,
+            MsgCommand.valueOf(commandType().name())
         );
-        return new HandleResult(msg, null);
+        startFinishMessagePublisher.publish(startSubject, finishSubject(), cmd);
+    }
+
+    @Override
+    public void finish(byte[] msg) {
+        SourceResponse response = byteTransformer.transform(msg, SourceResponse.class);
+        answer(response, response.getSource().getName());
+    }
+
+    @Override
+    public String finishSubject() {
+        return finishSubject + "." + entityType() + "." + commandType().name();
+    }
+
+    @Override
+    public String startSubject() {
+        return startSubject;
     }
 
     @Override
     public EntityType entityType() {
         return SOURCE;
     }
-
-    protected abstract SourceResponse handle(Long chatId, Long sourceId);
 }

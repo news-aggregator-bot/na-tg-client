@@ -1,4 +1,4 @@
-package bepicky.bot.client.message.finisher;
+package bepicky.bot.client.message.async;
 
 import io.nats.client.Connection;
 import io.nats.client.Dispatcher;
@@ -23,8 +23,8 @@ public class NatsFinisherManager {
     public void subscribeFinishers() {
         for (NatsMessageFinisher finisher : finishers) {
             Dispatcher dispatcher = natsConnection.createDispatcher(msg -> finisher.finish(msg.getData()));
-            dispatcher.subscribe(finisher.subject());
-            log.info("nats finisher init:{}:{}", finisher.getClass().getSimpleName(), finisher.subject());
+            dispatcher.subscribe(finisher.finishSubject());
+            log.info("nats finisher init:{}:{}", finisher.getClass().getSimpleName(), finisher.finishSubject());
         }
     }
 }
