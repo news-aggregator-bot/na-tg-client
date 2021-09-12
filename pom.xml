@@ -95,7 +95,7 @@
         <dependency>
             <groupId>bepicky</groupId>
             <artifactId>common-communication</artifactId>
-            <version>1.2-27-SNAPSHOT</version>
+            <version>1.2-28-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>bepicky</groupId>
             <artifactId>na-tg-core</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

@@ -9,11 +9,6 @@ import org.springframework.stereotype.Component;
 public class LanguagePickMessageHandler extends AbstractLanguageMessageHandler {
 
     @Override
-    protected LanguageResponse handle(Long chatId, String lang) {
-        return languageService.pick(chatId, lang);
-    }
-
-    @Override
     public CommandType commandType() {
         return CommandType.PICK;
     }

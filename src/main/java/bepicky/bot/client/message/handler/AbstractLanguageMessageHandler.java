@@ -1,49 +1,56 @@
 package bepicky.bot.client.message.handler;
 
+import bepicky.bot.client.message.nats.StartFinishMessagePublisher;
 import bepicky.bot.core.message.EntityType;
-import bepicky.bot.core.message.LangUtils;
 import bepicky.bot.core.cmd.CallbackCommand;
-import bepicky.bot.core.cmd.CommandManager;
-import bepicky.bot.core.message.handler.EntityCallbackMessageHandler;
 import bepicky.bot.core.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateNames;
-import bepicky.bot.client.service.ILanguageService;
-import bepicky.bot.core.message.template.TemplateUtils;
+import bepicky.common.data.DataTransformer;
 import bepicky.common.domain.response.LanguageResponse;
+import bepicky.common.msg.LanguageCommandMsg;
+import bepicky.common.msg.MsgCommand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
-public abstract class AbstractLanguageMessageHandler implements EntityCallbackMessageHandler {
-
-    @Autowired
-    protected CommandManager cmdMngr;
+public abstract class AbstractLanguageMessageHandler extends AbstractCmdMessageHandler {
 
     @Autowired
-    protected MessageTemplateContext templateContext;
+    private DataTransformer<byte[]> byteTransformer;
 
-    @Autowired
-    protected ILanguageService languageService;
+    @Value("${topics.lang.cmd.start}")
+    private String startSubject;
+
+    @Value("${topics.lang.cmd.finish}")
+    private String finishSubject;
 
     @Override
-    public HandleResult handle(CallbackCommand cc) {
+    public void start(CallbackCommand cc) {
         String lang = (String) cc.getId();
-        LanguageResponse response = handle(cc.getChatId(), lang);
-        if (response.isError()) {
-            String errorText = templateContext.errorTemplate(LangUtils.DEFAULT);
-            // handling
-            return new HandleResult(errorText, null);
-        }
-        String msg = templateContext.processTemplate(
-            TemplateNames.getTemplate(commandType(), entityType()),
-            response.getReader().getLang(),
-            TemplateUtils.name(response.getLanguage().getLocalized())
+        LanguageCommandMsg cmd = new LanguageCommandMsg(
+            cc.getChatId(),
+            lang,
+            MsgCommand.valueOf(commandType().name())
         );
-        return new HandleResult(msg, null);
+        startFinishMessagePublisher.publish(startSubject(), finishSubject(), cmd);
+    }
+
+    @Override
+    public void finish(byte[] msg) {
+        LanguageResponse response = byteTransformer.transform(msg, LanguageResponse.class);
+        answer(response, response.getLanguage().getLocalized());
+    }
+
+    @Override
+    public String finishSubject() {
+        return finishSubject + "." + entityType() + "." + commandType().name();
+    }
+
+    @Override
+    public String startSubject() {
+        return startSubject;
     }
 
     @Override
     public EntityType entityType() {
         return EntityType.LANGUAGE;
     }
-
-    protected abstract LanguageResponse handle(Long chatId, String lang);
 }
