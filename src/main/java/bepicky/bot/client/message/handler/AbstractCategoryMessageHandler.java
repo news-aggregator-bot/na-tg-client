@@ -55,6 +55,7 @@ public abstract class AbstractCategoryMessageHandler implements EntityCallbackMe
         if (response.isError()) {
             String errorText = templateContext.errorTemplate(LangUtils.DEFAULT);
             bot.sendNew(response.getReader().getChatId(), errorText);
+            return;
         }
         String txtmsg = templateContext.processTemplate(
             TemplateNames.getTemplate(commandType(), entityType()),

@@ -28,6 +28,10 @@ topics:
     notification:
       new: newsnote.notification
       success: newsnote.notification.success
+  lang:
+    cmd:
+      start: lang.cmd.start
+      finish: lang.cmd.finish
 eureka:
   instance:
     hostName: na-tg-client
