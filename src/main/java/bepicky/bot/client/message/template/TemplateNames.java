@@ -20,6 +20,7 @@ public class TemplateNames {
 
     private static final String TAG = "/tag";
     private static final String READER = "/reader";
+    private static final String LANG = "/lang";
     private static final String SUCCESS = "/success";
     private static final String INSTRUCTION = "/instruction";
 
@@ -29,6 +30,7 @@ public class TemplateNames {
     public static final String PICK_SOURCE_SUCCESS = "pick_source_success";
     public static final String PICK_TAG_SUCCESS = PICK + TAG + SUCCESS;
     public static final String PICK_TAG_INSTRUCTION = PICK + TAG + INSTRUCTION;
+    public static final String PICK_READER_LANG = PICK + READER + LANG;
     public static final String PICK_ALL_SUBCATEGORIES = "pick_all_subcategories";
 
     public static final String REMOVE_REGION_SUCCESS = "rm_region_success";

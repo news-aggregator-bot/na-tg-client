@@ -1,7 +1,6 @@
 package bepicky.bot.client.message.handler.common;
 
-import bepicky.bot.client.message.button.ReplyMarkupBuilder;
-import bepicky.bot.client.message.template.ButtonNames;
+import bepicky.bot.client.message.button.MenuKeyboardBuilder;
 import bepicky.bot.core.cmd.ChatCommand;
 import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.handler.MessageHandler;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import java.util.Arrays;
-
 @Component
 public class HelpMessageHandler implements MessageHandler {
 
@@ -25,22 +22,17 @@ public class HelpMessageHandler implements MessageHandler {
     private MessageTemplateContext templateContext;
 
     @Autowired
+    private MenuKeyboardBuilder menuKeyboardBuilder;
+
+    @Autowired
     private IReaderService readerService;
 
     @Override
     public BotApiMethod<Message> handle(ChatCommand cc) {
         ReaderDto reader = readerService.find(cc.getChatId());
         String text = templateContext.processEmojiTemplate(TemplateNames.HELP, reader.getLang());
-
-        ReplyMarkupBuilder replyMarkup = new ReplyMarkupBuilder();
-        String helpText = templateContext.processTemplate(ButtonNames.HELP, reader.getLang());
-        String tags = templateContext.processTemplate(ButtonNames.TAGS, reader.getLang());
-        String settings = templateContext.processTemplate(ButtonNames.SETTINGS, reader.getLang());
-        replyMarkup.addButtons(Arrays.asList(tags, settings));
-        replyMarkup.addButtons(Arrays.asList(helpText));
-
         return new SendMessageBuilder(cc.getChatId(), text)
-            .replyMarkup(replyMarkup.build())
+            .replyMarkup(menuKeyboardBuilder.getMenu(reader.getLang()).build())
             .build();
     }
 

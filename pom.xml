@@ -105,7 +105,7 @@
         <dependency>
             <groupId>bepicky</groupId>
             <artifactId>na-tg-core</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
+            <version>0.0.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

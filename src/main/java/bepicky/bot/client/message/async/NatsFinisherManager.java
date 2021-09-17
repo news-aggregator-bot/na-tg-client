@@ -24,7 +24,7 @@ public class NatsFinisherManager {
         for (NatsMessageFinisher finisher : finishers) {
             Dispatcher dispatcher = natsConnection.createDispatcher(msg -> finisher.finish(msg.getData()));
             dispatcher.subscribe(finisher.finishSubject());
-            log.info("nats finisher init:{}:{}", finisher.getClass().getSimpleName(), finisher.finishSubject());
+            log.info("finisher:{}", finisher.finishSubject());
         }
     }
 }

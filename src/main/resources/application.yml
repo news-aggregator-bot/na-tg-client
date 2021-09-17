@@ -24,6 +24,9 @@ topics:
       finish: category.list.finish
   reader:
     notification: reader.notification
+    language:
+      start: reader.primary.lang
+      finish: reader.primary.lang.finish
   news:
     notification:
       new: newsnote.notification
