@@ -76,6 +76,7 @@ public class TagMessageHandler implements MessageHandler {
 
         return new SendMessageBuilder(cc.getChatId(), result.getText())
             .replyMarkup(result.getInline())
+            .enableHtml()
             .disableWebPreview()
             .build();
     }
