@@ -1,1 +1,1 @@
-:x: ${name}
+:white_check_mark: ${name}
