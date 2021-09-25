@@ -3,7 +3,6 @@ package bepicky.bot.client.message.handler.choice;
 import bepicky.bot.core.message.EntityType;
 import org.springframework.stereotype.Component;
 
-@Component
 public class ChoiceCategoryMessageHandler extends AbstractChoiceMessageHandler {
 
     @Override
