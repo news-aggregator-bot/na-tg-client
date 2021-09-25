@@ -1,71 +1,66 @@
 package bepicky.bot.client.message.handler.common;
 
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
+import bepicky.bot.client.message.button.MenuKeyboardBuilder;
+import bepicky.bot.client.service.IReaderService;
 import bepicky.bot.core.cmd.ChatCommand;
-import bepicky.bot.core.cmd.CommandManager;
-import bepicky.bot.client.message.handler.context.ChatChainLink;
-import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.handler.MessageHandler;
 import bepicky.bot.core.message.template.MessageTemplateContext;
-import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.request.ReaderRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 
-import java.util.Arrays;
+import static bepicky.bot.client.message.template.TemplateNames.WELCOME;
 
 @Component
 @Slf4j
 public class WelcomeMessageHandler implements MessageHandler {
 
-    public static final String WELCOME = "welcome";
+    private final MessageTemplateContext templateContext;
 
-    @Autowired
-    private MessageTemplateContext templateContext;
+    private final IReaderService readerService;
 
-    @Autowired
-    protected CommandManager cmdMngr;
+    private final MenuKeyboardBuilder menuKeyboardBuilder;
 
-    @Autowired
-    private IReaderService readerService;
-
-    @Autowired
-    private ChatChainManager chainManager;
+    public WelcomeMessageHandler(
+        MessageTemplateContext templateContext,
+        IReaderService readerService,
+        MenuKeyboardBuilder menuKeyboardBuilder
+    ) {
+        this.templateContext = templateContext;
+        this.readerService = readerService;
+        this.menuKeyboardBuilder = menuKeyboardBuilder;
+    }
 
     @Override
     public BotApiMethod<Message> handle(ChatCommand cc) {
-        ReaderRequest readerRequest = buildReaderRequest(cc);
-        ReaderDto reader = readerService.register(readerRequest);
+        ReaderDto reader = checkRegistered(cc);
         String text = templateContext.processTemplate(
             WELCOME,
             reader.getPrimaryLanguage().getLang()
         );
-        ChatChainLink welcomeccl = chainManager.welcomeChain(reader.getChatId()).current();
-        InlineMarkupBuilder inlineMarkup = new InlineMarkupBuilder();
-        String msgText = templateContext.processEmojiTemplate(
-            welcomeccl.getButtonKey(),
-            reader.getLang()
-        );
-        InlineMarkupBuilder.InlineButton next = new InlineMarkupBuilder.InlineButton(
-            msgText,
-            welcomeccl.getCommand()
-        );
-        inlineMarkup.addButtons(Arrays.asList(next));
-
         return new SendMessageBuilder(cc.getChatId(), text)
-            .replyMarkup(inlineMarkup.build())
+            .replyMarkup(menuKeyboardBuilder.getMenu(reader.getLang()).build())
+            .enableHtml()
             .build();
     }
 
     @Override
     public String trigger() {
         return "/start";
+    }
+
+    private ReaderDto checkRegistered(ChatCommand cc) {
+        ReaderDto r = readerService.find(cc.getChatId());
+        if (r != null) {
+            return r;
+        }
+        ReaderRequest readerRequest = buildReaderRequest(cc);
+        return readerService.register(readerRequest);
     }
 
     private ReaderRequest buildReaderRequest(ChatCommand msg) {

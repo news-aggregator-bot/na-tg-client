@@ -13,6 +13,7 @@ public class TemplateNames {
 
     public static final String HELP = "help";
     public static final String SETTINGS = "settings";
+    public static final String WELCOME = "welcome";
 
     private static final String PICK = "pick";
     private static final String REMOVE = "rm";
