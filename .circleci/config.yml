@@ -34,7 +34,7 @@ jobs:
       - run:
           name: docker login
           command:
-            echo "$GITHUB_TOKEN" | docker login https://docker.pkg.github.com --username $GITHUB_USER --password-stdin
+            echo "$GITHUB_TOKEN" | docker login https://ghcr.io --username $GITHUB_USER --password-stdin
 
       - run:
           name: docker-compose
@@ -46,7 +46,7 @@ jobs:
       - run:
           name: docker push
           command: |
-            docker push docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-tg-client:latest
+            docker push ghcr.io/news-aggregator-bot/artifactory/bepicky.na-tg-client:latest
 
       - run:
           name: create ssh config

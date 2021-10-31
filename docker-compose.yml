@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   na-tg-client:
-    image: docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-tg-client
+    image: ghcr.io/news-aggregator-bot/artifactory/bepicky.na-tg-client
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
       - TG_CLIENT_TOKEN=${TG_CLIENT_TOKEN}
