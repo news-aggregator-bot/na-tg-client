@@ -55,10 +55,6 @@ public class WelcomeMessageHandler implements MessageHandler {
     }
 
     private ReaderDto checkRegistered(ChatCommand cc) {
-        ReaderDto r = readerService.find(cc.getChatId());
-        if (r != null) {
-            return r;
-        }
         ReaderRequest readerRequest = buildReaderRequest(cc);
         return readerService.register(readerRequest);
     }
