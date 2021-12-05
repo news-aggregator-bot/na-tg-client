@@ -38,7 +38,7 @@ public class WelcomeMessageHandler implements MessageHandler {
 
     @Override
     public BotApiMethod<Message> handle(ChatCommand cc) {
-        ReaderDto reader = checkRegistered(cc);
+        ReaderDto reader = readerService.register(buildReaderRequest(cc));
         String text = templateContext.processTemplate(
             WELCOME,
             reader.getPrimaryLanguage().getLang()
@@ -52,11 +52,6 @@ public class WelcomeMessageHandler implements MessageHandler {
     @Override
     public String trigger() {
         return "/start";
-    }
-
-    private ReaderDto checkRegistered(ChatCommand cc) {
-        ReaderRequest readerRequest = buildReaderRequest(cc);
-        return readerService.register(readerRequest);
     }
 
     private ReaderRequest buildReaderRequest(ChatCommand msg) {

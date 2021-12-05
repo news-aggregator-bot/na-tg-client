@@ -39,6 +39,8 @@ topics:
     cmd:
       start: src.cmd.start
       finish: src.cmd.finish
+  message:
+    admin: msg.admin
 eureka:
   instance:
     hostName: na-tg-client
