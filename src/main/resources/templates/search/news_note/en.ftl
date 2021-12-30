@@ -4,7 +4,7 @@ Found ${total} news notes. Page ${page}/${total_pages}
 
 <#list notes as note>
 <a href="${note.url}">${note.title}</a>
-${note.source} / ${note.date?date} / ${note.region} / ${note.common}
+${note.source} / ${note.date?date}
 
 </#list>
 <#else>

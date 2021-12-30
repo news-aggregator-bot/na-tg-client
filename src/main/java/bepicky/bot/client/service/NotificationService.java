@@ -7,7 +7,6 @@ import bepicky.bot.core.message.LangUtils;
 import bepicky.bot.core.message.builder.SendMessageBuilder;
 import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.common.domain.dto.NewsNoteNotificationDto;
-import bepicky.common.domain.request.NotifyMessageRequest;
 import bepicky.common.domain.request.NewsNotificationRequest;
 import bepicky.common.msg.TextMessage;
 import com.google.common.collect.ImmutableMap;
@@ -33,9 +32,6 @@ public class NotificationService implements INotificationService {
 
     @Autowired
     private IReaderService readerService;
-
-    @Autowired
-    private IValueNormalisationService normalisationService;
 
     @Autowired
     private NewsNoteNotificationSuccessMessagePublisher successMessagePublisher;
@@ -87,16 +83,9 @@ public class NotificationService implements INotificationService {
 
     private String buildMessage(NewsNoteNotificationDto n, String lang) {
         if (n.getLink() == NewsNoteNotificationDto.LinkDto.CATEGORY) {
-            String regions = n.getRegions();
-            String categories = n.getCommons();
-            String sourceNames = n.getSources();
             Map<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("title", n.getTitle())
                 .put("url", n.getUrl())
-                .put("source", sourceNames)
-                .put("region", normalisationService.normalise(regions))
-                .put("category", normalisationService.normalise(categories))
-                .put("author", normalisationService.normalise(n.getAuthor()))
                 .build();
             return templateContext.processTemplate(
                 TemplateNames.N_NN_C,
@@ -105,11 +94,9 @@ public class NotificationService implements INotificationService {
             ).trim();
         }
         if (n.getLink() == NewsNoteNotificationDto.LinkDto.TAG) {
-            String sourceNames = n.getSources();
             Map<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("title", n.getTitle())
                 .put("url", n.getUrl())
-                .put("source", sourceNames)
                 .put("tag", n.getLinkKey())
                 .build();
             return templateContext.processTemplate(

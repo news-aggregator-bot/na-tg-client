@@ -12,15 +12,11 @@ public class TemplateNewsNote {
     private final String url;
     private final String source;
     private final Date date;
-    private final String region;
-    private final String common;
 
     public TemplateNewsNote(NewsNoteDto dto) {
         this.title = dto.getTitle();
         this.url = dto.getUrl();
         this.source = dto.getSources();
         this.date = dto.getDate();
-        this.region = dto.getRegions();
-        this.common = dto.getCommons();
     }
 }
