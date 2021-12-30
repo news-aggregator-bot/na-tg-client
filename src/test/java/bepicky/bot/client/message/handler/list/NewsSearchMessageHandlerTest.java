@@ -60,13 +60,13 @@ class NewsSearchMessageHandlerTest extends ListHandlerTestSupport {
             "Found 100 news notes. Page 1/0\n" +
             "\n" +
             "<a href=\"https://url0\">title0</a>\n" +
-            "source_1 / 1 Jan 1970\n" +
+            "source_1 / Jan 1, 1970\n" +
             "\n" +
             "<a href=\"https://url1\">title1</a>\n" +
-            "source_1 / 1 Jan 1970\n" +
+            "source_1 / Jan 1, 1970\n" +
             "\n" +
             "<a href=\"https://url2\">title2</a>\n" +
-            "source_1 / 1 Jan 1970\n" +
+            "source_1 / Jan 1, 1970\n" +
             "\n" +
             "\n", result.getText());
     }
