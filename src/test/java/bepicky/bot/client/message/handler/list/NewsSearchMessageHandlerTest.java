@@ -6,7 +6,6 @@ import bepicky.bot.core.cmd.CallbackCommand;
 import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.core.message.EntityType;
 import bepicky.common.domain.dto.NewsNoteDto;
-import bepicky.common.domain.dto.SourcePageDto;
 import bepicky.common.domain.response.NewsSearchResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,8 +16,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
+import static bepicky.bot.client.TestEntitiesGenerator.generateArticles;
 
 @ExtendWith(MockitoExtension.class)
 class NewsSearchMessageHandlerTest extends ListHandlerTestSupport {
@@ -89,12 +88,6 @@ class NewsSearchMessageHandlerTest extends ListHandlerTestSupport {
         searchResponse.setList(articles);
         searchResponse.setReader(TestEntities.readerDto(CHAT_ID, TestEntities.en()));
         return searchResponse;
-    }
-
-    private List<NewsNoteDto> generateArticles(int amount, List<SourcePageDto> pages) {
-        return IntStream.range(0, amount)
-            .mapToObj(i -> TestEntities.newsArticle((long) i, pages))
-            .collect(Collectors.toList());
     }
 
 }

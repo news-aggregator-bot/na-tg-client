@@ -4,11 +4,14 @@ import bepicky.common.domain.dto.LanguageDto;
 import bepicky.common.domain.dto.NewsNoteDto;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.dto.SourcePageDto;
+import bepicky.common.domain.dto.TagDto;
 
 import java.util.Date;
 import java.util.List;
 
 public class TestEntities {
+
+    public static final Long CHAT_ID = -1L;
 
     public static NewsNoteDto newsArticle(Long noteId, List<SourcePageDto> pages) {
         NewsNoteDto newsNoteDto = new NewsNoteDto();
@@ -35,11 +38,33 @@ public class TestEntities {
         return en;
     }
 
+    public static LanguageDto ru() {
+        LanguageDto ru = new LanguageDto();
+        ru.setLang("ru");
+        ru.setName("ru");
+        ru.setLocalized("ru");
+        return ru;
+    }
+
+    public static LanguageDto ukr() {
+        LanguageDto ukr = new LanguageDto();
+        ukr.setLang("ukr");
+        ukr.setName("ukr");
+        ukr.setLocalized("ukr");
+        return ukr;
+    }
+
     public static SourcePageDto sourcePageDto(String sourceName) {
         SourcePageDto sourcePageDto = new SourcePageDto();
         sourcePageDto.setSourceName(sourceName);
         sourcePageDto.setUrl("https://url");
         sourcePageDto.setLanguages(List.of(en()));
         return sourcePageDto;
+    }
+
+    public static TagDto tagDto(String value) {
+        TagDto tagDto = new TagDto();
+        tagDto.setValue(value);
+        return tagDto;
     }
 }
