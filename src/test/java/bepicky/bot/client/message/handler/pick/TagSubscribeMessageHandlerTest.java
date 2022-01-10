@@ -83,7 +83,7 @@ class TagSubscribeMessageHandlerTest {
             "source_1 / Jan 1, 1970\n" +
             "\n" +
             "<a href=\"https://url4\">title4</a>\n" +
-            "source_1 / Jan 1, 1970\n", subscriptionResult.getText());
+            "source_1 / Jan 1, 1970\n" + "\n", subscriptionResult.getText());
         assertTrue(subscriptionResult.isPreviewPage());
     }
 
