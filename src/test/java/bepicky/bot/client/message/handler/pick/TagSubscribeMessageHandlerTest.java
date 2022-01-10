@@ -29,6 +29,7 @@ import static bepicky.bot.client.TestEntities.CHAT_ID;
 import static bepicky.bot.client.TestEntities.ukr;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class TagSubscribeMessageHandlerTest {
@@ -83,7 +84,7 @@ class TagSubscribeMessageHandlerTest {
             "\n" +
             "<a href=\"https://url4\">title4</a>\n" +
             "source_1 / Jan 1, 1970\n", subscriptionResult.getText());
-        assertFalse(subscriptionResult.isPreviewPage());
+        assertTrue(subscriptionResult.isPreviewPage());
     }
 
     @Test
@@ -119,7 +120,7 @@ class TagSubscribeMessageHandlerTest {
             "<a href=\"https://url4\">title4</a>\n" +
             "source_1 / Jan 1, 1970\n" +
             "\n", subscriptionResult.getText());
-        assertFalse(subscriptionResult.isPreviewPage());
+        assertTrue(subscriptionResult.isPreviewPage());
     }
 
     @Test
@@ -155,7 +156,7 @@ class TagSubscribeMessageHandlerTest {
             "<a href=\"https://url4\">title4</a>\n" +
             "source_1 / Jan 1, 1970\n" +
             "\n", subscriptionResult.getText());
-        assertFalse(subscriptionResult.isPreviewPage());
+        assertTrue(subscriptionResult.isPreviewPage());
     }
 
     private static Stream<Arguments> provideInvalidTagResponses() {
