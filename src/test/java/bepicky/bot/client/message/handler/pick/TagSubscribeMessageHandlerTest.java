@@ -4,6 +4,8 @@ import bepicky.bot.client.TestEntities;
 import bepicky.bot.client.TestEntitiesGenerator;
 import bepicky.bot.client.config.TemplateConfig;
 import bepicky.bot.client.service.ITagService;
+import bepicky.bot.client.service.IValueNormalisationService;
+import bepicky.bot.client.service.ValueNormalisationService;
 import bepicky.bot.core.cmd.CallbackCommand;
 import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.core.message.EntityType;
@@ -28,7 +30,6 @@ import java.util.stream.Stream;
 import static bepicky.bot.client.TestEntities.CHAT_ID;
 import static bepicky.bot.client.TestEntities.ukr;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,6 +52,9 @@ class TagSubscribeMessageHandlerTest {
     @Mock
     private ITagService tagService;
 
+    @Spy
+    private IValueNormalisationService valueNormalisationService = new ValueNormalisationService();
+
     @Test
     public void handleTagSubscribe_EnReader_ValidTag_BuildCorrectMessageBasedOnResponse() {
 
@@ -71,19 +75,19 @@ class TagSubscribeMessageHandlerTest {
             "Latest 5 news by #<b>key</b>\n" +
             "\n" +
             "<a href=\"https://url0\">title0</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 Jan 1970\n" +
             "\n" +
             "<a href=\"https://url1\">title1</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 Jan 1970\n" +
             "\n" +
             "<a href=\"https://url2\">title2</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 Jan 1970\n" +
             "\n" +
             "<a href=\"https://url3\">title3</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 Jan 1970\n" +
             "\n" +
             "<a href=\"https://url4\">title4</a>\n" +
-            "source_1 / Jan 1, 1970\n" + "\n", subscriptionResult.getText());
+            "source_1 / 01 Jan 1970\n" + "\n", subscriptionResult.getText());
         assertTrue(subscriptionResult.isPreviewPage());
     }
 
@@ -106,19 +110,19 @@ class TagSubscribeMessageHandlerTest {
             "Последние 5 новостей по тэгу #<b>key</b>\n" +
             "\n" +
             "<a href=\"https://url0\">title0</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 янв. 1970\n" +
             "\n" +
             "<a href=\"https://url1\">title1</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 янв. 1970\n" +
             "\n" +
             "<a href=\"https://url2\">title2</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 янв. 1970\n" +
             "\n" +
             "<a href=\"https://url3\">title3</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 янв. 1970\n" +
             "\n" +
             "<a href=\"https://url4\">title4</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 янв. 1970\n" +
             "\n", subscriptionResult.getText());
         assertTrue(subscriptionResult.isPreviewPage());
     }
@@ -142,19 +146,19 @@ class TagSubscribeMessageHandlerTest {
             "Останні 5 новин за тегом #<b>key</b>\n" +
             "\n" +
             "<a href=\"https://url0\">title0</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 січ. 1970\n" +
             "\n" +
             "<a href=\"https://url1\">title1</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 січ. 1970\n" +
             "\n" +
             "<a href=\"https://url2\">title2</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 січ. 1970\n" +
             "\n" +
             "<a href=\"https://url3\">title3</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 січ. 1970\n" +
             "\n" +
             "<a href=\"https://url4\">title4</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 січ. 1970\n" +
             "\n", subscriptionResult.getText());
         assertTrue(subscriptionResult.isPreviewPage());
     }

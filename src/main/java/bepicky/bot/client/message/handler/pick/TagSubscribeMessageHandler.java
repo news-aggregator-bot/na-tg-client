@@ -4,50 +4,63 @@ import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.message.template.TemplateNewsNote;
 import bepicky.bot.client.service.ITagService;
+import bepicky.bot.client.service.IValueNormalisationService;
 import bepicky.bot.core.cmd.CallbackCommand;
 import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.core.message.EntityType;
 import bepicky.bot.core.message.LangUtils;
 import bepicky.bot.core.message.handler.EntityCallbackMessageHandler;
 import bepicky.bot.core.message.template.MessageTemplateContext;
-import bepicky.bot.core.message.template.TemplateUtils;
-import bepicky.common.domain.response.TagResponse;
 import com.google.common.collect.ImmutableMap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class TagSubscribeMessageHandler implements EntityCallbackMessageHandler {
 
-    @Autowired
-    private ITagService tagService;
+    private final ITagService tagService;
+    private final MessageTemplateContext templateContext;
+    private final IValueNormalisationService valueNormalisationService;
 
-    @Autowired
-    protected MessageTemplateContext templateContext;
+    public TagSubscribeMessageHandler(
+        ITagService tagService,
+        MessageTemplateContext templateContext,
+        IValueNormalisationService valueNormalisationService
+    ) {
+        this.tagService = tagService;
+        this.templateContext = templateContext;
+        this.valueNormalisationService = valueNormalisationService;
+    }
 
     @Override
     public HandleResult handle(CallbackCommand command) {
-        String key = (String) command.getId();
-        TagResponse tag = tagService.subscribe(command.getChatId(), key);
+        var key = (String) command.getId();
+        var tag = tagService.subscribe(command.getChatId(), key);
         if (tag.isError()) {
             if (tag.getReader() == null) {
-                String errorText = templateContext.errorTemplate(LangUtils.DEFAULT);
+                var errorText = templateContext.errorTemplate(LangUtils.DEFAULT);
                 return new HandleResult(errorText, null);
             }
             if (tag.getError().getCode() == 403) {
-                String errorText = templateContext.processTemplate(TemplateNames.STATUS_TAG_LIMIT, tag.getReader().getLang());
+                var errorText =
+                    templateContext.processTemplate(TemplateNames.STATUS_TAG_LIMIT, tag.getReader().getLang());
                 return new HandleResult(errorText, null);
             }
         }
 
-        List<TemplateNewsNote> templateDtos = tag.getNews().stream()
-            .map(TemplateNewsNote::new)
+        var templateDtos = tag.getNews()
+            .stream()
+            .map(dto -> {
+                var normalisedDate = valueNormalisationService.normaliseDate(
+                    dto.getDate(),
+                    tag.getReader().getLang()
+                );
+                return new TemplateNewsNote(dto, normalisedDate);
+            })
             .collect(Collectors.toList());
 
-        String txt = templateContext.processTemplate(
+        var txt = templateContext.processTemplate(
             TemplateNames.PICK_TAG_SUCCESS,
             tag.getReader().getLang(),
             ImmutableMap.of(

@@ -11,12 +11,12 @@ public class TemplateNewsNote {
     private final String title;
     private final String url;
     private final String source;
-    private final Date date;
+    private final String date;
 
-    public TemplateNewsNote(NewsNoteDto dto) {
+    public TemplateNewsNote(NewsNoteDto dto, String date) {
         this.title = dto.getTitle();
         this.url = dto.getUrl();
         this.source = dto.getSources();
-        this.date = dto.getDate();
+        this.date = date;
     }
 }

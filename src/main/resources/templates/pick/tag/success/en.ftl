@@ -5,7 +5,7 @@ Latest ${total} news by #<b>${name}</b>
 
 <#list notes as note>
 <a href="${note.url}">${note.title}</a>
-${note.source} / ${note.date?date}
+${note.source} / ${note.date}
 
 </#list>
 <#else>

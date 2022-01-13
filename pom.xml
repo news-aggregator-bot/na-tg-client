@@ -89,7 +89,7 @@
         <dependency>
             <groupId>bepicky</groupId>
             <artifactId>na-tg-core</artifactId>
-            <version>0.0.6</version>
+            <version>0.0.7</version>
         </dependency>
         <dependency>
             <groupId>picky</groupId>

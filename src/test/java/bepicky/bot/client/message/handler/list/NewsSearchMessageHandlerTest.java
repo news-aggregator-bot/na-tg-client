@@ -2,6 +2,8 @@ package bepicky.bot.client.message.handler.list;
 
 import bepicky.bot.client.TestEntities;
 import bepicky.bot.client.service.INewsService;
+import bepicky.bot.client.service.IValueNormalisationService;
+import bepicky.bot.client.service.ValueNormalisationService;
 import bepicky.bot.core.cmd.CallbackCommand;
 import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.core.message.EntityType;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -29,6 +32,9 @@ class NewsSearchMessageHandlerTest extends ListHandlerTestSupport {
 
     @Mock
     private INewsService newsService;
+
+    @Spy
+    private IValueNormalisationService valueNormalisationService = new ValueNormalisationService();
 
     @Test
     public void handle_ValidCmd_ReturnExpectedMessage() {
@@ -59,13 +65,13 @@ class NewsSearchMessageHandlerTest extends ListHandlerTestSupport {
             "Found 100 news notes. Page 1/0\n" +
             "\n" +
             "<a href=\"https://url0\">title0</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 Jan 1970\n" +
             "\n" +
             "<a href=\"https://url1\">title1</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 Jan 1970\n" +
             "\n" +
             "<a href=\"https://url2\">title2</a>\n" +
-            "source_1 / Jan 1, 1970\n" +
+            "source_1 / 01 Jan 1970\n" +
             "\n" +
             "\n", result.getText());
     }
